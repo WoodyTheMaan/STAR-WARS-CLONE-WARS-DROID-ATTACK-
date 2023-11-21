@@ -32,7 +32,7 @@ namespace STAR_WARS_CLONE_WARS_DROID_ATTACK_
             _graphics.PreferredBackBufferWidth = 800;
             _graphics.PreferredBackBufferHeight = 600;
             _graphics.ApplyChanges();
-           cloneTrooper = new Rectangle(300, 10, 100, 100);
+           cloneTrooper = new Rectangle(300, 10, 100, 100);  
             base.Initialize();
         }
 
