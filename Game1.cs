@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Threading;
 
 namespace STAR_WARS_CLONE_WARS_DROID_ATTACK_
 {
@@ -10,12 +11,13 @@ namespace STAR_WARS_CLONE_WARS_DROID_ATTACK_
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         Rectangle cloneTrooperRect, blastShotRect;
-        Texture2D titleScreenImage, cloneTrooper, b1BattleDroid, b1BattleDroidBroken, blastShot;
-        SoundEffectInstance menuMusic, mainTheme;
+        Texture2D titleScreenImage, cloneTrooper, b1BattleDroid, b1BattleDroidBroken, blastShot, backgroundBattleField, stool;
+        SoundEffectInstance menuMusic, mainTheme, droidDeath, cloneBlastShot, cloneVirctory;
         Screen screen;
         MouseState mouseState;
         Vector2 cloneTrooperSpeed, blastShotSpeed;
-        bool blast;
+        float time;
+        bool blast, blasted;
         int grow;
         enum Screen
         {
@@ -47,12 +49,17 @@ namespace STAR_WARS_CLONE_WARS_DROID_ATTACK_
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             titleScreenImage = Content.Load<Texture2D>("STAR WARS CLONE WARS MENU");
-            menuMusic = Content.Load<SoundEffect>("Starwars THEME").CreateInstance();
+            menuMusic = Content.Load<SoundEffect>("MENUMUSIC").CreateInstance();
             b1BattleDroid = Content.Load<Texture2D>("B1_Battle_Droid");
+            backgroundBattleField = Content.Load<Texture2D>("BattleBackground");
+            cloneBlastShot = Content.Load<SoundEffect>("BlastShot").CreateInstance();
+            droidDeath = Content.Load<SoundEffect>("DroidDeath").CreateInstance();
             b1BattleDroidBroken = Content.Load<Texture2D>("Deddrodmanman");
+            cloneVirctory = Content.Load<SoundEffect>("CloneVictory").CreateInstance();
             blastShot = Content.Load<Texture2D>("Blast1");
+            stool = Content.Load<Texture2D>("stool");
             cloneTrooper = Content.Load<Texture2D>("CLONE TROOPER FOR GAME");
-            mainTheme = Content.Load<SoundEffect>("MainTheme").CreateInstance();
+            mainTheme = Content.Load<SoundEffect>("Battle of the Heroes").CreateInstance();
             // TODO: use this.Content to load your game content here
         }
 
@@ -69,37 +76,61 @@ namespace STAR_WARS_CLONE_WARS_DROID_ATTACK_
             {
                 menuMusic.Play();
                 if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    mainTheme.Play();
                     screen = Screen.battleFeild;
+                   
+
+                }
 
             }
             else if (screen == Screen.battleFeild)
             {
                 menuMusic.Pause();
-                mainTheme.Play();
                 cloneTrooperRect.X += (int)cloneTrooperSpeed.X;
                 cloneTrooperRect.Y += (int)cloneTrooperSpeed.Y;
                 cloneTrooperRect.Width += grow;
                 cloneTrooperRect.Height += grow;
-                if (cloneTrooperRect.X == 100)
+                if (cloneTrooperRect.X == 100 && !blasted)
                 {
+                    
                     cloneTrooperSpeed.X = 0;
                     cloneTrooperSpeed.Y = 0;
                     grow = 0;
                     blast = true;
+                    blasted = true;
+                    cloneBlastShot.Play();
+
                 }
-                if (blast)
+                else if (blast)
                 {
                     blastShotRect.X += (int)blastShotSpeed.X;
                     blastShotRect.Y += (int)blastShotSpeed.Y;
                     if(blastShotRect.X == 500)
                     {
+                        
                         blastShotSpeed.X = 0;
                         blastShotSpeed.Y = 0;
                         blast = false;
                         b1BattleDroid = b1BattleDroidBroken;
-                        
+                        droidDeath.Play();
+                      
+
                     }
 
+                }
+                else if (blasted)
+                {
+                    time += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if ((int)time == 3)
+                    {
+                        mainTheme.Pause();
+                        cloneVirctory.Play();
+                    }
+                    else if ((int)time == 8)
+                    {
+                        mainTheme.Play();
+                    }
                 }
 
             }
@@ -118,6 +149,8 @@ namespace STAR_WARS_CLONE_WARS_DROID_ATTACK_
             }
             else if (screen == Screen.battleFeild)
             {
+                _spriteBatch.Draw(backgroundBattleField, new Rectangle(0, 0, 800, 600), Color.White);
+                _spriteBatch.Draw(stool, new Rectangle(200, 100, 5, 9), Color.White);
                 _spriteBatch.Draw(cloneTrooper, cloneTrooperRect, Color.White);
                 _spriteBatch.Draw(b1BattleDroid, new Rectangle(560, 120, 200, 380), Color.White);
                 if (blast)
