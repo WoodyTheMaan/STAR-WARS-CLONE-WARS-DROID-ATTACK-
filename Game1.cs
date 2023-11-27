@@ -14,6 +14,7 @@ namespace STAR_WARS_CLONE_WARS_DROID_ATTACK_
         Texture2D titleScreenImage, cloneTrooper, b1BattleDroid, b1BattleDroidBroken, blastShot, backgroundBattleField, stool;
         SoundEffectInstance menuMusic, mainTheme, droidDeath, cloneBlastShot, cloneVirctory;
         Screen screen;
+        SpriteFont titleFont;
         MouseState mouseState;
         Vector2 cloneTrooperSpeed, blastShotSpeed;
         float time;
@@ -61,6 +62,7 @@ namespace STAR_WARS_CLONE_WARS_DROID_ATTACK_
             cloneTrooper = Content.Load<Texture2D>("CLONE TROOPER FOR GAME");
             mainTheme = Content.Load<SoundEffect>("Battle of the Heroes").CreateInstance();
             // TODO: use this.Content to load your game content here
+            titleFont = Content.Load<SpriteFont>("Font");
         }
 
         protected override void Update(GameTime gameTime)
@@ -146,11 +148,13 @@ namespace STAR_WARS_CLONE_WARS_DROID_ATTACK_
             if (screen == Screen.Intro)
             {
                 _spriteBatch.Draw(titleScreenImage, new Rectangle(0, 0, 800, 600), Color.White);
+                _spriteBatch.DrawString(titleFont, "Star Wars: Droid Attack (DEMO)", new Vector2(50, 200), Color.Yellow);
             }
             else if (screen == Screen.battleFeild)
             {
                 _spriteBatch.Draw(backgroundBattleField, new Rectangle(0, 0, 800, 600), Color.White);
-                _spriteBatch.Draw(stool, new Rectangle(200, 100, 5, 9), Color.White);
+                _spriteBatch.Draw(stool, new Rectangle(150, 320, 100, 120), Color.White);
+                _spriteBatch.Draw(stool, new Rectangle(250, 335, 90, 110), Color.White);
                 _spriteBatch.Draw(cloneTrooper, cloneTrooperRect, Color.White);
                 _spriteBatch.Draw(b1BattleDroid, new Rectangle(560, 120, 200, 380), Color.White);
                 if (blast)
